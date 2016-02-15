@@ -32,7 +32,8 @@ app.all('*', function(req, res, next) {
 });
 
 // Define database
-var database = new Sequelize('finsight', 'postgres', 'ch@ngeme', { dialect: 'postgres' });
+var database = new Sequelize('finsight-prod', 'postgres', 'ch@ngeme', { dialect: 'postgres' });
+//var database = new Sequelize('finsight', 'postgres', 'ch@ngeme', { dialect: 'postgres' });
 
 // Portfolio Model
 var Portfolio = database.define('Portfolio', {
@@ -87,6 +88,20 @@ var Transaction = database.define('Transaction', {
   }
 });
 
+// PriceHistory Model
+var PriceHistory = database.define('PriceHistory', {
+  date: Sequelize.DATE,
+  price: Sequelize.FLOAT,
+  tickerId: {
+    type: Sequelize.INTEGER,
+      references: {
+        model: Ticker,
+        key: 'id',
+        deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
+      }
+  }
+});
+
 // Initialize epilogue
 epilogue.initialize({
   app: app,
@@ -114,13 +129,10 @@ var transactionResource = epilogue.resource({
   endpoints: ['/trans', '/trans/:id']
 });
 
-// router.get('/', function(req, res) {
-//     res.json({ message: 'Test - server is up and running!' });   
-// });
-
-//app.use('/api/portfolio', portRoute);
-
-//app.use('/api/users', userRoute);
+var priceHistoryResource = epilogue.resource({
+  model: PriceHistory,
+  endpoints: ['/price', '/price/:id']
+});
 
 // Create database and listen
 database
