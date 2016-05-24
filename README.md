@@ -6,7 +6,7 @@ Used in conjunction with [finsight client app](https://github.com/rramteerath/fi
 
 ##Install
 ```sh
-npm Install
+npm install
 ```
 
 ##Run
